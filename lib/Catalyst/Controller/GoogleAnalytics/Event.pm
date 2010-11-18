@@ -62,7 +62,9 @@ sub push_event :Private {
     Joins all GA events into a printable javascript snippet. Call this in the
     footer of all pages.
 
-    Sample usage with HTML::Mason: <% $c->controller('GoogleAnalytics')->events_js_output($c) |n %>
+    with HTML::Mason: <% $c->controller('MyInheritingController')->events_js_output($c) |n %>
+
+    with TT:          [% c.controller('MyInheritingController').events_js_output(c) %]
 
 =cut
 
@@ -72,6 +74,9 @@ sub events_js_output :Private {
     return '' if (ref($c->session->{Catalyst_Controller_Google_Analytics_events}) ne 'ARRAY' or scalar(@{ $c->session->{Catalyst_Controller_Google_Analytics_events} })==0);
 
     my $output = qq{<script type="text/javascript">\n};
+
+    # TODO: Output with a JSON module. //kd
+
     while (my $event = shift @{ $c->session->{Catalyst_Controller_Google_Analytics_events} }) {
         $output .= "_gaq.push(['_trackEvent'"
             . ", '". $event->{category} ."'"
@@ -85,5 +90,8 @@ sub events_js_output :Private {
 }
 
 __PACKAGE__->meta->make_immutable;
+
+# TODO: Add Licence //okko
+# TODO: Add Makefile.PL, tests //kd,okko
 
 1;
